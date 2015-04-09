@@ -9,4 +9,5 @@ gevent-websocket==0.9.3
 greenlet==0.4.5
 itsdangerous==0.24
 ujson==1.33
-Flask-ReCaptcha=0.3
+Flask-ReCaptcha==0.3
+RPi.GPIO==0.5.11

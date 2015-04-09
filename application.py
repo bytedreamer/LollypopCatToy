@@ -9,6 +9,7 @@ POLLING_TIME = 5
 PLAY_TIME = 60
 
 shared_queue = []
+current_key = None
 time_left = 0
 data_lock = threading.Lock()
 tracking_thread = threading.Thread()
@@ -30,12 +31,17 @@ def create_app():
         global time_left
         global tracking_thread
         global data_lock
+        global current_key
         with data_lock:
             if time_left <= 0 and len(shared_queue) >= 1:
-                key = shared_queue.pop()
-                socketio.emit(key, {'time_left': PLAY_TIME,
-                                    'queue_length': 0,
-                                    'is_ready': True}, namespace='/queue')
+                if current_key is not None:
+                    socketio.emit(current_key, {'time_left': 0,
+                                                'queue_length': 0,
+                                                'is_ready': False}, namespace='/queue')
+                current_key = shared_queue.pop()
+                socketio.emit(current_key, {'time_left': PLAY_TIME,
+                                            'queue_length': 0,
+                                            'is_ready': True}, namespace='/queue')
                 time_left = PLAY_TIME
             elif time_left > 0:
                 time_left -= POLLING_TIME
@@ -43,7 +49,7 @@ def create_app():
             queue_length = 0
             for key in reversed(shared_queue):
                 socketio.emit(key, {'time_left': (queue_length * PLAY_TIME) + time_left,
-                                    'queue_length': queue_length,
+                                    'queue_length': queue_length + 1,
                                     'is_ready': False}, namespace='/queue')
                 queue_length += 1
 

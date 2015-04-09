@@ -24,9 +24,14 @@ def register():
         return render_template('home.html')
 
 
+@app.route('/play', methods=['POST'])
+def play():
+    pass
+
 @socketio.on('connect', namespace='/queue')
 def queue_connect():
     print('Client connected')
+
 
 @socketio.on('disconnect', namespace='/queue')
 def queue_disconnect():

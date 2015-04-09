@@ -10,21 +10,43 @@
     <script src="{{ url_for('static', filename='js/lib/socket.io.min.js') }}"></script>
 </head>
 <body>
-    <h3>{{ request.form['name'] }}, you have successfully registered to activate the cat play toys.</h3>
+    <h3>{{ request.form['name'] }}, you have successfully registered to activate the cat play toys!</h3>
 
-    <p>Key: {{ key }}</p>
+    <div id="WaitingInQueue">
+        <h4>There are one or more visitor in the queue to play with the cats. Please wait a few minutes for your turn.</h4>
+        <p>Number of visitors in queue: <span id="VisitorQueueNumber"></span></p>
+        <p>Time Left: <span id="TimeLeft"></span></p>
+    </div>
 
-    <p>Number of visitors in queue: <span id="VisitorQueueNumber"></span></p>
-    <p>Time Left: <span id="TimeLeft"></span></p>
-
-    <p>Ready: <span id="IsReady"></span></p>
+    <div id="ControlToys">
+        <h4>Have fun playing with the cats!</h4>
+        <button id="Toy1">Toy #1</button>
+    </div>
 
     <script type="text/javascript">
-        var socket = io.connect('http://' + document.domain + ':' + location.port + '/queue');
-        socket.on('{{ key }}', function(status) {
-            $('#TimeLeft').text(status.time_left);
-            $('#VisitorQueueNumber').text(status.queue_length);
-            $('#IsReady').text(status.is_ready);
+
+        $(function() {
+            $('#WaitingInQueue').hide();
+            $('#ControlToys').hide();
+
+            var socket = io.connect('http://' + document.domain + ':' + location.port + '/queue');
+            socket.on('{{ key }}', function(status) {
+                $('#TimeLeft').text(status.time_left);
+                $('#VisitorQueueNumber').text(status.queue_length);
+
+                if (status.is_ready)
+                {
+                    $('#WaitingInQueue').hide();
+                    $('#ControlToys').show();
+                } else {
+                    $('#WaitingInQueue').show();
+                    $('#ControlToys').hide();
+                }
+            });
+
+            $('#Toy1').on('click', function(){
+                alert('click');
+            });
         });
     </script>
 </body>
