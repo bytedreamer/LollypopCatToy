@@ -4,19 +4,73 @@
     <meta charset="UTF-8">
     <title></title>
 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/lollypop.css') }}" />
+
     <script src="{{ url_for('static', filename='js/lib/jquery-2.1.3.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/underscore-min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/backbone-min.js') }}"></script>
 </head>
 <body>
     <div id="RegistrationPage">
-        <h3>Enter your first name and verify that you are not a robot to control the cat toys.</h3>
+        <h1>Lollypop Farm Cat Cam</h1>
+
+        <h2>Live Video</h2>
+        <div style="margin: 10px" align="center">
+            <img id="CameraImage" alt=""/>
+        </div>
+
+        <h2>Register to control cat toys</h2>
         <form action="{{ url_for('register') }}" method="post">
-            <label for="NameInput">Name:</label>
-            <input id="NameInput" type="text" name="name"/>
-            {{ recaptcha }}
-            <input id="SubmitName" type="submit" value="Submit"/>
+            <div style="margin: 10px">
+                <h3>Enter your first name and verify that you are not a robot to control the cat toys.</h3>
+                <div style="margin-bottom: 10px" align="center">
+                    <label for="NameInput">Name:</label>
+                    <input id="NameInput" type="text" name="name"/>
+                </div>
+
+                <div style="margin-bottom: 10px" align="center">
+                    {{ recaptcha }}
+                </div>
+
+                <div style="margin-bottom: 10px" align="center">
+                    <input id="SubmitName" type="submit" value="Submit"/>
+                </div>
+            </div>
+
         </form>
     </div>
+
+    <script type="application/javascript">
+        var LiveApp = function() {};
+
+		LiveApp.prototype = {
+			delay: 50, // in milliseconds
+
+			setup: function() {
+				this.image = document.getElementById('CameraImage');
+				this.imageSource = 'http://104.206.193.11:49709/dcnvr/video/live/image/2?w=320&h=240';
+				this.loadImage();
+			},
+
+			loadImage: function() {
+				this.image.src = this.imageSource + '&random=' + Math.random();
+			},
+
+			onImageLoaded: function() {
+				this.timer = setTimeout(function() {this.loadImage();}, this.delay);
+			}
+    	};
+
+        var theApp = null;
+        $(function() {
+    		theApp = new LiveApp();
+
+            $('#CameraImage').load(function(){
+                theApp.loadImage();
+            });
+
+    		theApp.setup();
+        });
+    </script>
 </body>
 </html>
