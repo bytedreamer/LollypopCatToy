@@ -44,7 +44,7 @@
         var CameraApp = function() {};
 
 		CameraApp.prototype = {
-			delay: 50, // in milliseconds
+            framesPerSecond: 15,
 
 			setup: function() {
 				this.image = document.getElementById('CameraImage');
@@ -53,7 +53,22 @@
 			},
 
 			loadImage: function() {
-				this.image.src = this.imageSource + '&random=' + Math.random();
+                var calculatedDelay = 1000 / this.framesPerSecond;
+                var currentTime = new Date().getTime();
+                if (this.lastLoadTime != undefined){
+                    calculatedDelay = this.delay - (currentTime - this.lastLoadTime);
+                }
+
+                this.lastLoadTime = currentTime;
+
+                if (calculatedDelay <= 0) {
+                    this.image.src = this.imageSource + '&random=' + Math.random();
+                } else {
+                    var cameraApp = this;
+                    this.Timer =    setTimeout(function() {
+                        cameraApp.image.src = cameraApp.imageSource + '&random=' + Math.random();
+                    }, calculatedDelay);
+                }
 			}
     	};
 
@@ -62,7 +77,7 @@
     		cameraApp = new CameraApp();
 
             $('#CameraImage').load(function() {
-                setTimeout(function() { cameraApp.loadImage(); }, cameraApp.delay);
+                cameraApp.loadImage();
             });
 
     		cameraApp.setup();
