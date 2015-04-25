@@ -9,6 +9,7 @@
     <script src="{{ url_for('static', filename='js/lib/jquery-2.1.3.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/underscore-min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/backbone-min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </head>
 <body>
     <div id="RegistrationPage">
@@ -40,48 +41,5 @@
         </form>
     </div>
 
-    <script type="application/javascript">
-        var CameraApp = function() {};
-
-		CameraApp.prototype = {
-            framesPerSecond: 15,
-
-			setup: function() {
-				this.image = document.getElementById('CameraImage');
-				this.imageSource = 'http://104.206.193.11:49709/dcnvr/video/live/image/2?w=320&h=240';
-				this.loadImage();
-			},
-
-			loadImage: function() {
-                var calculatedDelay = 1000 / this.framesPerSecond;
-                var currentTime = new Date().getTime();
-                if (this.lastLoadTime != undefined){
-                    calculatedDelay = this.delay - (currentTime - this.lastLoadTime);
-                }
-
-                this.lastLoadTime = currentTime;
-
-                if (calculatedDelay <= 0) {
-                    this.image.src = this.imageSource + '&random=' + Math.random();
-                } else {
-                    var cameraApp = this;
-                    this.Timer =    setTimeout(function() {
-                        cameraApp.image.src = cameraApp.imageSource + '&random=' + Math.random();
-                    }, calculatedDelay);
-                }
-			}
-    	};
-
-        var cameraApp = null;
-        $(function() {
-    		cameraApp = new CameraApp();
-
-            $('#CameraImage').load(function() {
-                cameraApp.loadImage();
-            });
-
-    		cameraApp.setup();
-        });
-    </script>
 </body>
 </html>
