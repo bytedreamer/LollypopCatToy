@@ -16,7 +16,7 @@
 
         <h2>Live Video</h2>
         <div style="margin: 10px" align="center">
-            <img id="CameraImage" alt=""/>
+            <img id="CameraImage" alt="Live Video Feed" src=""/>
         </div>
 
         <h2>Register to control cat toys</h2>
@@ -41,9 +41,9 @@
     </div>
 
     <script type="application/javascript">
-        var LiveApp = function() {};
+        var CameraApp = function() {};
 
-		LiveApp.prototype = {
+		CameraApp.prototype = {
 			delay: 50, // in milliseconds
 
 			setup: function() {
@@ -54,22 +54,18 @@
 
 			loadImage: function() {
 				this.image.src = this.imageSource + '&random=' + Math.random();
-			},
-
-			onImageLoaded: function() {
-				this.timer = setTimeout(function() {this.loadImage();}, this.delay);
 			}
     	};
 
-        var theApp = null;
+        var cameraApp = null;
         $(function() {
-    		theApp = new LiveApp();
+    		cameraApp = new CameraApp();
 
-            $('#CameraImage').load(function(){
-                theApp.loadImage();
+            $('#CameraImage').load(function() {
+                setTimeout(function() { cameraApp.loadImage(); }, cameraApp.delay);
             });
 
-    		theApp.setup();
+    		cameraApp.setup();
         });
     </script>
 </body>
