@@ -4,23 +4,36 @@
     <meta charset="UTF-8">
     <title></title>
 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/lollypop.css') }}" />
+
     <script src="{{ url_for('static', filename='js/lib/jquery-2.1.3.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/underscore-min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/backbone-min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/socket.io.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </head>
 <body>
-    <h3>{{ request.form['name'] }}, you have successfully registered to activate the cat play toys!</h3>
+<div>
+        <h1>Lollypop Farm Cat Cam</h1>
 
-    <div id="WaitingInQueue">
-        <h4>There are one or more visitor in the queue to play with the cats. Please wait a few minutes for your turn.</h4>
-        <p>Number of visitors in queue: <span id="VisitorQueueNumber"></span></p>
-        <p>Time Left: <span id="TimeLeft"></span></p>
-    </div>
+        <h3>{{ request.form['name'] }}, you have successfully registered to activate the cat play toys!</h3>
 
-    <div id="ControlToys">
-        <h4>Have fun playing with the cats!</h4>
-        <button id="Toy1">Toy #1</button>
+        <h2>Live Video</h2>
+        <div style="margin: 10px" align="center">
+            <img id="CameraImage" alt="Live Video Feed" src=""/>
+        </div>
+
+        <div id="WaitingInQueue">
+            <h3>There are one or more visitor in the queue to play with the cats. Please wait a few minutes for your turn.</h3>
+            <p>Number of visitors in queue: <span id="VisitorQueueNumber"></span></p>
+            <p>Time Left: <span id="TimeLeft"></span></p>
+        </div>
+
+        <div id="ControlToys">
+            <h3>Have fun playing with the cats!</h3>
+            <button id="Toy1">Toy #1</button>
+        </div>
     </div>
 
     <script type="text/javascript">
