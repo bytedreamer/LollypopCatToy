@@ -21,26 +21,33 @@
 
         <h2>Live Video</h2>
         <div style="margin: 10px" align="center">
-            <img id="CameraImage" alt="Live Video Feed" src=""/>
+            <img id="CameraImage" alt="Loading Live Video Feed" src=""/>
         </div>
 
         <div id="WaitingInQueue">
             <h3>There are one or more visitor in the queue to play with the cats. Please wait a few minutes for your turn.</h3>
             <p>Number of visitors in queue: <span id="VisitorQueueNumber"></span></p>
-            <p>Time Left: <span id="TimeLeft"></span></p>
+            <p>Time left in seconds: <span id="TimeLeft"></span></p>
         </div>
 
         <div id="ControlToys">
             <h3>Have fun playing with the cats!</h3>
             <button id="Toy1">Toy #1</button>
         </div>
+
+        <div id="RegisterAgain">
+            <h3>Playtime is over. Feel free to register again for additional time.</h3>
+            <button id="RegisterAgainButton">Register Again</button>
+        </div>
     </div>
 
     <script type="text/javascript">
+        var hasPlayed = false;
 
         $(function() {
             $('#WaitingInQueue').hide();
             $('#ControlToys').hide();
+            $('#RegisterAgain').hide();
 
             var socket = io.connect('http://' + document.domain + ':' + location.port + '/queue');
             socket.on('{{ key }}', function(status) {
@@ -49,8 +56,13 @@
 
                 if (status.is_ready)
                 {
+                    hasPlayed = true;
                     $('#WaitingInQueue').hide();
                     $('#ControlToys').show();
+                } else if (hasPlayed) {
+                    $('#WaitingInQueue').hide();
+                    $('#ControlToys').hide();
+                    $('#RegisterAgain').show();
                 } else {
                     $('#WaitingInQueue').show();
                     $('#ControlToys').hide();
@@ -59,6 +71,10 @@
 
             $('#Toy1').on('click', function(){
                 alert('click');
+            });
+
+            $('#RegisterAgainButton').on('click', function(){
+                history.back();
             });
         });
     </script>

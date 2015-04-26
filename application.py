@@ -35,7 +35,9 @@ def create_app():
         with data_lock:
             if time_left <= 0 and len(shared_queue) >= 1:
                 if current_key is not None:
-                    shared_queue.insert(0, current_key)
+                    socketio.emit(current_key, {'time_left': 0,
+                                                'queue_length': 0,
+                                                'is_ready': False}, namespace='/queue')
 
                 current_key = shared_queue.pop()
                 socketio.emit(current_key, {'time_left': PLAY_TIME,

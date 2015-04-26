@@ -1,3 +1,9 @@
+body {
+    color: #27221f;
+    font-family: Arial,helvetica,sans-serif;
+    font-size: 12px;
+}
+
 h1 {
     color: #003f39;
     font-family: Arial,helvetica,sans-serif;
