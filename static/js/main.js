@@ -6,8 +6,10 @@ var CameraApp = function() {};
 
 CameraApp.prototype = {
     framesPerSecond: 1,
+    timeoutInMinutes: 1,
 
     setup: function() {
+        this.startTime = new Date().getTime();
         this.image = document.getElementById('CameraImage');
         this.imageSource = 'http://104.206.193.11:49709/dcnvr/video/live/image/2?w=320&h=240';
         this.loadImage();
@@ -16,6 +18,18 @@ CameraApp.prototype = {
     loadImage: function() {
         var calculatedDelay = 1000 / this.framesPerSecond;
         var currentTime = new Date().getTime();
+
+        if (currentTime - this.startTime > this.timeoutInMinutes * 60000)
+        {
+            if (!confirm('Live video viewing has timed out. Do you want to continue viewing?'))
+            {
+                return;
+            } else {
+                this.startTime = new Date().getTime();
+            }
+        }
+
+
         if (this.lastLoadTime != undefined){
             calculatedDelay = calculatedDelay - (currentTime - this.lastLoadTime);
         }
