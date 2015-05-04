@@ -6,10 +6,10 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/lollypop.css') }}" />
 
-    <script src="{{ url_for('static', filename='js/lib/jquery-2.1.3.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/lib/underscore-min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/lib/backbone-min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/socket.io.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jquery-2.1.3.min.js') }}"></script>
+
+
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </head>
@@ -70,7 +70,7 @@
             });
 
             $('#Toy1').on('click', function(){
-                alert('click');
+                $.post('/play/{{ key }}/4');
             });
 
             $('#RegisterAgainButton').on('click', function(){

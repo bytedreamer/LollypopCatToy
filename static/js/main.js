@@ -5,8 +5,8 @@
 var CameraApp = function() {};
 
 CameraApp.prototype = {
-    framesPerSecond: 1,
-    timeoutInMinutes: 1,
+    framesPerSecond: 15,
+    timeoutInMinutes: 10,
 
     setup: function() {
         this.startTime = new Date().getTime();

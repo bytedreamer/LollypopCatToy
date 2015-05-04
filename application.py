@@ -2,6 +2,11 @@ import threading
 import atexit
 from flask import Flask
 from flask.ext.socketio import SocketIO
+try:
+    import RPi.GPIO as GPIO
+except RuntimeError:
+    print("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
+import time
 
 __author__ = 'Jonathan Horvath'
 
@@ -19,6 +24,7 @@ socketio = SocketIO()
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_pyfile('config.py')
+
     global socketio
     socketio.init_app(app)
 
@@ -73,3 +79,13 @@ def add_to_queue(key):
     global data_lock
     with data_lock:
         shared_queue.insert(0, key)
+
+
+def activate_cat_toy(key, gpio_number):
+    global current_key
+    if key == current_key:
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(gpio_number, GPIO.OUT)
+        GPIO.output(gpio_number, True)
+        time.sleep(1)
+        GPIO.output(gpio_number, False)
