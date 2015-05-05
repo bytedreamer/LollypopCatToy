@@ -11,9 +11,6 @@ import time
 
 __author__ = 'Jonathan Horvath'
 
-POLLING_TIME = 5
-PLAY_TIME = 60
-
 shared_queue = []
 current_key = None
 time_left = 0
@@ -25,6 +22,9 @@ socketio = SocketIO()
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_pyfile('config.py')
+
+    play_time = app.config.get('PLAYING_TIME_IN_SECONDS')
+    polling_time = app.config.get('POLLING_INTERVAL_IN_SECONDS')
 
     global socketio
     socketio.init_app(app)
@@ -49,27 +49,27 @@ def create_app():
                                                 'is_ready': False}, namespace='/queue')
 
                 current_key = shared_queue.pop()
-                socketio.emit(current_key, {'time_left': PLAY_TIME,
+                socketio.emit(current_key, {'time_left': play_time,
                                             'queue_length': 0,
                                             'is_ready': True}, namespace='/queue')
-                time_left = PLAY_TIME
+                time_left = play_time
             elif time_left > 0:
-                time_left -= POLLING_TIME
+                time_left -= polling_time
 
             queue_length = 0
             for key in reversed(shared_queue):
-                socketio.emit(key, {'time_left': (queue_length * PLAY_TIME) + time_left,
+                socketio.emit(key, {'time_left': (queue_length * play_time) + time_left,
                                     'queue_length': queue_length + 1,
                                     'is_ready': False}, namespace='/queue')
                 queue_length += 1
 
-        tracking_thread = threading.Timer(POLLING_TIME, process_queue, ())
+        tracking_thread = threading.Timer(polling_time, process_queue, ())
         tracking_thread.start()
 
     def start():
         global tracking_thread
 
-        tracking_thread = threading.Timer(POLLING_TIME, process_queue, ())
+        tracking_thread = threading.Timer(polling_time, process_queue, ())
         tracking_thread.start()
 
     start()
