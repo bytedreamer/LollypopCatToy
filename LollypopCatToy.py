@@ -16,12 +16,11 @@ def index():
 @app.route('/register', methods=['POST'])
 def register():
     if reCaptcha.verify():
-        if True:
-            key = uuid4()
-            add_to_queue(key)
-            return render_template('register.html', key=key)
-        else:
-            return render_template('home.html')
+        key = uuid4()
+        add_to_queue(key)
+        return render_template('register.html', key=key)
+    else:
+        return render_template('home.html')
 
 
 @app.route('/play/<key>/<int:gpio_number>', methods=['POST'])

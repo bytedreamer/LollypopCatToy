@@ -5,7 +5,8 @@ from flask.ext.socketio import SocketIO
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:
-    print("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
+    print("Error importing RPi.GPIO!  This is probably because you need superuser privileges. "
+          "You can achieve this by using 'sudo' to run your script")
 import time
 
 __author__ = 'Jonathan Horvath'
@@ -27,6 +28,8 @@ def create_app():
 
     global socketio
     socketio.init_app(app)
+
+    GPIO.setmode(GPIO.BCM)
 
     def interrupt():
         global tracking_thread
@@ -81,11 +84,15 @@ def add_to_queue(key):
         shared_queue.insert(0, key)
 
 
+def pulse_output(gpio_number):
+    GPIO.setup(gpio_number, GPIO.OUT)
+    GPIO.output(gpio_number, True)
+    time.sleep(5)
+    GPIO.output(gpio_number, False)
+
+
 def activate_cat_toy(key, gpio_number):
     global current_key
     if key == current_key:
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(gpio_number, GPIO.OUT)
-        GPIO.output(gpio_number, True)
-        time.sleep(1)
-        GPIO.output(gpio_number, False)
+        pulsing_thread = threading.Thread(target=pulse_output, args=(gpio_number,))
+        pulsing_thread.start()
