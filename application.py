@@ -4,6 +4,7 @@ from flask import Flask
 from flask.ext.socketio import SocketIO
 try:
     import RPi.GPIO as GPIO
+    from Adafruit_PWM_Servo_Driver import PWM
 except RuntimeError:
     print("Error importing RPi.GPIO!  This is probably because you need superuser privileges. "
           "You can achieve this by using 'sudo' to run your script")
@@ -85,10 +86,24 @@ def add_to_queue(key):
 
 
 def pulse_output(gpio_number):
-    GPIO.setup(gpio_number, GPIO.OUT)
-    GPIO.output(gpio_number, True)
-    time.sleep(5)
-    GPIO.output(gpio_number, False)
+    if gpio_number < 100:
+        GPIO.setup(gpio_number, GPIO.OUT)
+        GPIO.output(gpio_number, True)
+        time.sleep(5)
+        GPIO.output(gpio_number, False)
+    else:
+        servo_number = 100 - gpio_number
+        pwm = PWM(0x40)
+
+        servoMin = 150  # Min pulse length out of 4096
+        servoMax = 600  # Max pulse length out of 4096
+        pwm.setPWMFreq(60)                        # Set frequency to 60 Hz
+        for counter in range(1, 3):
+            # Change speed of continuous servo on channel O
+            pwm.setPWM(servo_number, 0, servoMin)
+            time.sleep(1)
+            pwm.setPWM(servo_number, 0, servoMax)
+            time.sleep(1)
 
 
 def activate_cat_toy(key, gpio_number):

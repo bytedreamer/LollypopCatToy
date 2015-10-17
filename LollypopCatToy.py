@@ -8,6 +8,7 @@ __author__ = 'Jonathan Horvath'
 app = create_app()
 reCaptcha = ReCaptcha(app)
 
+
 @app.route('/')
 def index():
     return render_template('home.html')

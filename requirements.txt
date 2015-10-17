@@ -11,3 +11,4 @@ itsdangerous==0.24
 ujson==1.33
 Flask-ReCaptcha==0.3
 RPi.GPIO==0.5.11
+smbus-cffi==0.5.1
